@@ -11,7 +11,6 @@ print(Caesar_Cipher_Art.logo)
 
 result = True
 
-
 def caesar(start_text, shift_amount, cipher_direction):
 	end_text = ""
 	if shift_amount > 26:
