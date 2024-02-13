@@ -3,13 +3,10 @@ from time import sleep
 
 ordering = True
 
-# TODO print report
 def report():
 	for ingredient, values in resources.items():
 		print(f"{ingredient} : {values}")
 
-
-# TODO process coins
 def coin_machine():
 	quarters = int(input("How many quarters?: "))
 	dimes = int(input("How many dimes?: "))
@@ -24,7 +21,6 @@ def update_money(total):
 	resources["Money"] = total
 	return total
 
-# TODO check transaction successful
 def transaction(total, cost):
 	print(f"this is the total again: {total}")
 	print(f"this is the cost again: {cost}")
@@ -38,6 +34,32 @@ def transaction(total, cost):
 	else:
 		print("Not enough coins.")
 
+def check_resources(coffee):
+	# check if milk is in order and have enough
+	if "milk" in MENU[coffee]["ingredients"]:
+		if MENU[coffee]["ingredients"]["milk"] > resources["milk"]:
+			print("Not enough milk, order something else")
+			return False
+		else:
+			resources["milk"] = resources["milk"] - MENU[coffee]["ingredients"]["milk"]
+
+	# check if water ''''''
+	if "water" in MENU[coffee]["ingredients"]:
+		if MENU[coffee]["ingredients"]["water"] > resources["water"]:
+			print("Not enough water, order something else.")
+			return False
+		else:
+			resources["water"] = resources["water"] - MENU[coffee]["ingredients"]["water"]
+
+	# check if coffee '''
+	if "coffee" in MENU[coffee]["ingredients"]:
+		if MENU[coffee]["ingredients"]["coffee"] > resources["coffee"]:
+			print("Not enough coffee, order something else")
+			return False
+		else:
+			resources["coffee"] = resources["coffee"] - MENU[coffee]["ingredients"]["coffee"]
+	return resources
+
 
 while ordering != False:
 	print("-----MENU-----")
@@ -46,44 +68,19 @@ while ordering != False:
 
 	order = input(f"What would you like: ")
 
-	machine_water = resources["water"]
-	order_water = MENU[order]["ingredients"]["water"]
-
-	# TODO work on this. Checking if milk is in the ingredients list
-	# if MENU[order]["ingredients"]["milk"] in MENU[order]["ingredients"]:
-	# 	machine_milk = resources["milk"]
-	# 	order_milk = MENU[order]["ingredients"]["milk"]
-
-	machine_coffee = resources["coffee"]
-	order_coffee = MENU[order]["ingredients"]["coffee"]
-
-	# TODO check resources
 	if order == "report":
 		print("Generating report...")
 		sleep(2)
 		report()
-	# TODO turn off machine
+
 	if order == "off":
 		print("Machine is turning off...")
 		sleep(2)
 		ordering = False
 		exit()
 	if order in MENU:
-		if machine_water >= order_water or machine_milk >= order_milk or machine_coffee >= order_coffee:
-
-			new_water = machine_water - order_water
-			new_milk = machine_milk - order_milk
-			new_coffee = machine_coffee - order_coffee
-
-			resources["coffee"] = new_coffee
-			resources["milk"] = new_milk
-			resources["water"] = new_water
-
+		if check_resources(order) != False:
 			print(f"That'll be ${MENU[order]["cost"]}0 ")
 			cost = MENU[order]["cost"]
 			print("please insert coins.")
 			transaction(coin_machine(), cost)
-		else:
-			print("Not enough resources.")
-
-# TODO make coffee
